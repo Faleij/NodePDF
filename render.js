@@ -11,8 +11,9 @@ var contentsCb = function(pobj) {
 if (phantom.args.length < 2) {
 	console.log('11');
 	console.log('incorrect args');
-	phantom.exit();
+	phantom.exit(1);
 } else {
+	console.log("\nphantom args", phantom.args);
 	var options = JSON.parse(phantom.args[2]);
 
 	contentsCb(options.paperSize.header);
@@ -35,6 +36,7 @@ if (phantom.args.length < 2) {
 		if(status !== 'success'){
 			console.log('error');
 			console.log('unable to load the address!');
+			phantom.exit(1);
 		} else {
 			window.setTimeout(function(){
 				page.render(phantom.args[1]);

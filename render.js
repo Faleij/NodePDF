@@ -9,13 +9,17 @@ var contentsCb = function(pobj) {
 }
 
 if (phantom.args.length < 2) {
-	console.log('11');
 	console.log('incorrect args');
 	phantom.exit(1);
 } else {
-	console.log("\nphantom args", phantom.args);
 	var options = JSON.parse(phantom.args[2]);
 
+	if (options.content) {
+		options.content = options.content.map(function (str) {
+			return String.fromCharCode(str);
+		}).join('');
+	}
+	
 	contentsCb(options.paperSize.header);
 	contentsCb(options.paperSize.footer);
 
@@ -34,13 +38,11 @@ if (phantom.args.length < 2) {
 
 	page.onLoadFinished = function(status) {
 		if(status !== 'success'){
-			console.log('error');
 			console.log('unable to load the address!');
 			phantom.exit(1);
 		} else {
 			window.setTimeout(function(){
-				page.render(phantom.args[1]);
-				console.log('success');
+				page.render(phantom.args[1], { format: 'pdf' });
 				phantom.exit();
 			}, options.captureDelay || 400);
 		};

@@ -76,6 +76,12 @@ Pdf.prototype = Object.create(Emitter.prototype);
 Pdf.prototype.run = function() {
 	var self = this;
 
+	if (this.options.content) {
+		this.options.content = this.options.content.split('').map(function (str) {
+			return str.charCodeAt(0);
+		});
+	}
+
 	var ps = child.exec(this.url, this.fileName, this.options);
 
 	ps.on('exit', function(c, d){
@@ -118,6 +124,12 @@ exports.render = function(address, file, options, callback) {
 
 	child.supports(function(support){
 		if (!support) callback(true, 'PhantomJS not installed');
+
+		if (options.content) {
+		options.content = options.content.split('').map(function (str) {
+				return str.charCodeAt(0);
+			});
+		}
 
 		var ps = child.exec(address, file, options);
 

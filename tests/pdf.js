@@ -4,7 +4,8 @@ var assert = require('assert');
 
 var Pdf = require('../index.js'),
 	child = require('../child.js'),
-	FP = process.env.PWD || process.cwd() || __dirname;
+	FP = process.env.PWD || process.cwd() || __dirname,
+	fs = require('fs');
 
 describe('child#supports()', function(){
 	it('checks to see if phantomjs is installed', function(d){
@@ -33,6 +34,7 @@ describe('pdf#done() 1', function(){
 		pdf1.on('done', function(msg){
 			assert.ok(msg);
 			assert.equal(FP + '/google.pdf', msg);
+			fs.unlink(FP + '/google.pdf');
 			d();
 		});
 		pdf1.on('error', function(msg){
@@ -50,6 +52,7 @@ describe('pdf#content', function() {
 		pdf1.on('done', function(msg){
 			assert.ok(msg);
 			assert.equal(FP + '/html.pdf', msg);
+			fs.unlink(FP + '/html.pdf');
 			d();
 		});
 		pdf1.on('error', function(msg){
@@ -102,6 +105,7 @@ describe('pdf#done() 2', function(){
 		pdf2.on('done', function(msg){
 			assert.ok(msg);
 			assert.equal(FP + '/yahoo.pdf', msg);
+			fs.unlink(FP + '/yahoo.pdf');
 			d();
 		});
 		pdf2.on('error', function(msg){
@@ -117,6 +121,22 @@ describe('pdf#render()', function(){
 		Pdf.render('http://www.google.com', 'google2.pdf', function(err, file){
 			assert.equal(err, false);
 			assert.equal(FP + '/google2.pdf', file);
+			fs.unlink(FP + '/google2.pdf');
+			d();
+		});
+	});
+});
+
+
+describe('pdf#render()', function(){
+	it('renders a pdf with a callback style and content', function(d){
+		this.timeout(5000);
+		Pdf.render(null, 'google3.pdf', {
+				'content': '<html><body>Test</body></html>'
+			}, function(err, file){
+			assert.equal(err, false);
+			assert.equal(FP + '/google3.pdf', file);
+			fs.unlink(FP + '/google3.pdf');
 			d();
 		});
 	});
